@@ -6,8 +6,9 @@
 </head>
 <body>
 <br><br>
+
 <h3>登录</h3>
-<form action="/index/usercontrol/login" method="post">
+<form action="/user/usercontrol/login" method="post">
     name：<input type="text" name="name">
     password:<input type="password" name="password">
     <!--control:<input type="text" name="control">-->
@@ -15,8 +16,10 @@
 </form>
 <br><br>
 <h3>注册</h3>
-<form action="/index/usercontrol/insertuser" method="post">
+<form action="/user/usercontrol/insertuser" method="post">
     name：<input type="text" name="name">
+    username：<input type="text" name="username">
+    rank：<input type="text" name="rank">
     password:<input type="password" name="password">
     <!--control:<input type="text" name="control">-->
     <input type="submit" value="注册">

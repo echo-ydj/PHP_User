@@ -1,9 +1,7 @@
 <?php
-
-
 namespace app\user\controller;
 //记得引入模型
-use app\index\model\User;
+use app\user\model\User;
 use app\user\model\AuthMiddleware;
 //use app\user\model\User;
 //use app\user\model\AuthMiddleware;
@@ -17,8 +15,8 @@ class Usercontrol extends Controller
     var $status=false;
 
     public function index(){
-    $n = new AuthMiddleware();
 
+        echo (time()|date("y-m-d h:i:s"));
         return $this->fetch('user/index');
     }
     //判断登录状态
@@ -43,9 +41,11 @@ class Usercontrol extends Controller
     public function Login(Request $request){
         //获取表单数据
         $list=$request->post();
-
+//        echo request()->param('name');
+//        echo input('param.name');
+        dump($list!=null);
         //判断提交表单是否有值
-        if (true) {
+        if ($list['name']!=null&&$list['password']!=null) {
             $user = User::where('name', $list['name'])
                 ->where('password', $list['password'])->find();
 
@@ -61,6 +61,8 @@ class Usercontrol extends Controller
                 //登录失败
                 return "error";
             }
+        }else{
+            return "请输入用户名和密码";
         }
     }
     public function noLogin(){
@@ -72,9 +74,17 @@ class Usercontrol extends Controller
     {
 //       dump( User::where("name='1' and password='1'") ->find());
 
-        $user = User::where('id', 5)
-            ->where('password','thinkphp')->find();
-        dump($user);
+        $user = User::where('id', 11)
+            ->where('password','123')->find();
+
+        $this->assign('user', $user);
+
+        return $this->fetch('user/index');
+
+//            view中html中写入
+//        <!--数据库int 型接收时间戳   获取后再用data规定显示效果-->
+//            <!--  {$user['created_at']|date='Y-m-d H:i:s' }-->
+
 
 //        $user = User::get(2);
 //       echo $user->in_charge_of->email;
@@ -87,8 +97,7 @@ class Usercontrol extends Controller
         $list=$request->post();
         dump($list);
         //判断表单是否传值
-        if ($list){
-            echo "j-------------j";
+        if ($list['name']!=null&&$list['username']!=null){
             $user = new User();
             $user->save([
                 'name'  =>  $list['name'],
@@ -99,8 +108,12 @@ class Usercontrol extends Controller
 
             'in_charge_of'=>['email'    => 'thinkphp@qq.com', 'nickname'=> '流年'],
 
-            'password'=>$list['rank'],
-        ]);
+                'password'=>$list['rank'],
+//                'created_at'=>time(),
+            ]);
+            echo $user->create_at;
+//            echo dump($user->created_at);
+
         }
 
 
