@@ -132,7 +132,7 @@ class Usercontrol extends Controller
 
 //        $n = new AuthMiddleware();
 //        echo $n->getMessages();
-//        echo $n->getUsename(2);
+//        echo $n->getUsername(2);
 
         echo AuthMiddleware::getMessages();
 

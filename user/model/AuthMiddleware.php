@@ -19,14 +19,14 @@ class AuthMiddleware extends Model
     public function checkAuthifMatched(){
 
     }
-    public function getUsename($id){
-
+    public function getUsername($id){
+//        find 差一个  select 查多个
         $user = self::where('id', $id)->find();
 
         return $user->username;
     }
     public function getPowerRank($id){
-        $user = self::where('name', $id)->select();
+        $user = self::where('name', $id)->find();
         return $user->rank;
     }
 
