@@ -50,13 +50,22 @@ class Usercontrol extends Controller
                 ->where('password', $list['password'])->find();
 
             if ($user) {
-//            登录成功
+    //            登录成功
                 //存入session
+                //
+                //   ------------------ session不能自己失效--------------
+
                 session('name', $list['name']);
                 session('password', $list['password']);
                 session('id',$user['id']);
+                $name=Session::get('name');
+
+
+
+//                      登录状态改为true
                 $this->status = true;
-                return "sescues";
+                $this->assign('name',$name);
+                return $this->fetch('user/index2');
             } else {
                 //登录失败
                 return "error";
@@ -111,8 +120,8 @@ class Usercontrol extends Controller
                 'password'=>$list['rank'],
 //                'created_at'=>time(),
             ]);
-            echo $user->create_at;
-//            echo dump($user->created_at);
+//            echo $user->create_at;
+
 
         }
 
@@ -123,15 +132,28 @@ class Usercontrol extends Controller
     
     public function updateUser()
     {
-//        dump(session('id'));
+        dump(session('id'));
         //判断是否退出登录
         if (session('id')){
-            User::where('id', session('id'))
-            ->update(['name' => 'Thinkphp']);
+//            此方法更新后数据库  不会  自动生成时间戳
+//            User::where('id', 9)
+//            ->update(['name' => 'php']);
+
+//            此方法更新后数据库   会  自动生成时间戳
+//            $user = new User();
+//        // 显式指定更新数据操作
+//        $user->isUpdate(true)
+//            ->save(['id' => 8, 'name' => 'thinkphp']);
+
+
         }
         else{
             return 'error';
         }
+
+
+
+
     }
     public function deleteUser()
     {
@@ -143,9 +165,9 @@ class Usercontrol extends Controller
     {
         echo 4;
 
-//        $n = new AuthMiddleware();
+        $n = new AuthMiddleware();
 //        echo $n->getMessages();
-//        echo $n->getUsername(2);
+        echo $n->getUsername(2)."<br>";
 
         echo AuthMiddleware::getMessages();
 
