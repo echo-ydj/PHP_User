@@ -130,20 +130,22 @@ class Usercontrol extends Controller
 
     }
     
-    public function updateUser()
+    public function updateUser(Request $request)
     {
         dump(session('id'));
+        $list=$request->post();
+
         //判断是否退出登录
         if (session('id')){
 //            此方法更新后数据库  不会  自动生成时间戳
-//            User::where('id', 9)
+//            User::where('id', 10)
 //            ->update(['name' => 'php']);
 
 //            此方法更新后数据库   会  自动生成时间戳
-//            $user = new User();
+            $user = new User();
 //        // 显式指定更新数据操作
-//        $user->isUpdate(true)
-//            ->save(['id' => 8, 'name' => 'thinkphp']);
+        $user->isUpdate(true)
+            ->save(['id' => 8, 'name' =>$list['name'],'password'=>$list['password']]);
 
 
         }
@@ -155,11 +157,14 @@ class Usercontrol extends Controller
 
 
     }
-    public function deleteUser()
+    public function deleteUser(Request $request)
     {
-
-        $user = User::get(session('id'));
-        $user->delete();
+//        通过url连接get 获取参数
+//        $list=Request::get('id');
+//        dump($list);
+        dump($request->get('id'));
+//        $user = User::get($list['id']);
+//        $user->delete();
     }
     public function get1()
     {
