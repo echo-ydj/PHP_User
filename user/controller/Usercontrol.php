@@ -15,8 +15,11 @@ class Usercontrol extends Controller
     var $status=false;
 
     public function index(){
+//        直接输出日期
+     echo   time()%86400 == 57600 ? date('Y-m-d') : date('Y-m-d H:i');
 
-        echo (time()|date("y-m-d h:i:s"));
+
+        $this->assign('time',time());
         return $this->fetch('user/index');
     }
     //判断登录状态
@@ -53,7 +56,7 @@ class Usercontrol extends Controller
     //            登录成功
                 //存入session
                 //
-                //   ------------------ session不能自己失效--------------
+                //   ------------------ session关闭浏览器后失效  不能设置失效时间--------------
 
                 session('name', $list['name']);
                 session('password', $list['password']);
@@ -131,7 +134,7 @@ class Usercontrol extends Controller
     }
     
     public function updateUser(Request $request)
-    {
+    {   $id=session('id');
         dump(session('id'));
         $list=$request->post();
 
@@ -145,7 +148,8 @@ class Usercontrol extends Controller
             $user = new User();
 //        // 显式指定更新数据操作
         $user->isUpdate(true)
-            ->save(['id' => 8, 'name' =>$list['name'],'password'=>$list['password']]);
+//            save 首值为条件
+            ->save(['id' => $id, 'name' =>$list['name'],'password'=>$list['password']]);
 
 
         }
@@ -157,23 +161,41 @@ class Usercontrol extends Controller
 
 
     }
-    public function deleteUser(Request $request)
+    public function deleteUser()
     {
-//        通过url连接get 获取参数
-//        $list=Request::get('id');
-//        dump($list);
-        dump($request->get('id'));
-//        $user = User::get($list['id']);
-//        $user->delete();
+
+        $user = User::get($this->request->get('id'));
+        if (true) {
+
+            $user->delete();
+          return $this->success('删除成功','/user/usercontrol/index');
+
+        }else{
+
+            return $this->error('删除失败');
+        }
+
+
+//        dump(input('param.id'));
+//        dump(input('id'));
     }
     public function get1()
     {
-        echo 4;
+//        get1?a=1&b=2
+//        --1--
+        $l =new Request();
+        dump( $l->get('id'));
+//        --2--
+        dump($this->request->get('id'));
+//       -- 3--
+        $get=input('get.');
+        dump(input('get.'));
+        dump(input('get.a'));
+        dump(input('get.b'));
+        echo "---------------------<br>";
 
         $n = new AuthMiddleware();
-//        echo $n->getMessages();
-        echo $n->getUsername(2)."<br>";
-
+        echo $n->getUsername(2) . "<br>";
         echo AuthMiddleware::getMessages();
 
     }
