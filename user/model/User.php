@@ -15,6 +15,7 @@ class User extends Model
     //设置json字段
     protected $json = ['in_charge_of'];
 
+
     public function getMessages(){
 
 

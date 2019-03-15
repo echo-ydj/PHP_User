@@ -9,6 +9,7 @@ use think\console\Table;
 use think\Controller;
 use think\facade\Session;
 use think\Request;
+
 class Usercontrol extends Controller
 {
     //用于判断登录状态
@@ -22,7 +23,7 @@ class Usercontrol extends Controller
         $this->assign('time',time());
         return $this->fetch('user/index');
     }
-    //判断登录状态
+    //判断是否登录
     public function isLogin(){
         //未登录
         if($this->status){
@@ -49,7 +50,7 @@ class Usercontrol extends Controller
         dump($list!=null);
         //判断提交表单是否有值
         if ($list['name']!=null&&$list['password']!=null) {
-            $user = User::where('name', $list['name'])
+            $user = AuthMiddleware::where('name', $list['name'])
                 ->where('password', $list['password'])->find();
 
             if ($user) {
@@ -68,7 +69,8 @@ class Usercontrol extends Controller
 //                      登录状态改为true
                 $this->status = true;
                 $this->assign('name',$name);
-                return $this->fetch('user/index2');
+//                return $this->fetch('user/index2');
+                return redirect("/user/usercontrol/get1?id=".session('id'));
             } else {
                 //登录失败
                 return "error";
@@ -86,12 +88,12 @@ class Usercontrol extends Controller
     {
 //       dump( User::where("name='1' and password='1'") ->find());
 
-        $user = User::where('id', 11)
+        $user =AuthMiddleware::where('id', 11)
             ->where('password','123')->find();
-
         $this->assign('user', $user);
-
         return $this->fetch('user/index');
+
+
 
 //            view中html中写入
 //        <!--数据库int 型接收时间戳   获取后再用data规定显示效果-->
@@ -110,22 +112,29 @@ class Usercontrol extends Controller
         dump($list);
         //判断表单是否传值
         if ($list['name']!=null&&$list['username']!=null){
-            $user = new User();
-            $user->save([
+            $user = new AuthMiddleware();
+            $user['in_charge_of']=array(['email'    => 'thinkphp@qq.com', 'nickname'=> '流年']);
+           $flag= $user->save([
                 'name'  =>  $list['name'],
                 'username'=> $list['username'],
                 'rank'=>$list['rank'],
 
             //-------------待改部分---------------
 
-            'in_charge_of'=>['email'    => 'thinkphp@qq.com', 'nickname'=> '流年'],
+//            'in_charge_of'=>['email'    => 'thinkphp@qq.com', 'nickname'=> '流年'],
 
                 'password'=>$list['rank'],
 //                'created_at'=>time(),
             ]);
 //            echo $user->create_at;
+            if($flag){
+//                注册成功
+                return   "sucess";
 
-
+            }else{
+//                注册失败
+                return 0;
+            }
         }
 
 
@@ -145,7 +154,7 @@ class Usercontrol extends Controller
 //            ->update(['name' => 'php']);
 
 //            此方法更新后数据库   会  自动生成时间戳
-            $user = new User();
+            $user = new AuthMiddleware();
 //        // 显式指定更新数据操作
         $user->isUpdate(true)
 //            save 首值为条件
@@ -181,22 +190,37 @@ class Usercontrol extends Controller
     }
     public function get1()
     {
+
 //        get1?a=1&b=2
 //        --1--
-        $l =new Request();
-        dump( $l->get('id'));
-//        --2--
-        dump($this->request->get('id'));
+//        $l =new Request();
+//        dump( $l->get('id'));
+////        --2--
+//        dump($this->request->get('id'));
 //       -- 3--
-        $get=input('get.');
-        dump(input('get.'));
-        dump(input('get.a'));
-        dump(input('get.b'));
+//        $get=input('get.');
+//        dump(input('get.'));
+//        dump(input('get.a'));
+//        dump(input('get.b'));
         echo "---------------------<br>";
+        $n = new AuthMiddleware(12);
+        echo $n->getUsername($this->request->get('id')) . "<br>";
+        echo $n->getPowerRank($this->request->get('id'));
 
-        $n = new AuthMiddleware();
-        echo $n->getUsername(2) . "<br>";
-        echo AuthMiddleware::getMessages();
+        $list=$n->getResponsibilityColumn($this->request->get('id'));
+        dump($list);
+
+        dump( $list[0]->email);
+
+    }
+    public function fenye(){
+        //
+        $list = AuthMiddleware::where('rank',1)->paginate(2);
+        dump($list);
+// 把分页数据赋值给模板变量list
+        $this->assign('list', $list);
+// 渲染模板输出
+        return $this->fetch('user/index2');
 
     }
 
