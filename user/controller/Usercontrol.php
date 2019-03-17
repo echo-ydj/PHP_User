@@ -3,17 +3,17 @@ namespace app\user\controller;
 //记得引入模型
 use app\user\model\User;
 use app\user\model\AuthMiddleware;
-//use app\user\model\User;
-//use app\user\model\AuthMiddleware;
 use think\console\Table;
 use think\Controller;
 use think\facade\Session;
 use think\Request;
+use think\facade\Cookie;
 
 class Usercontrol extends Controller
 {
     //用于判断登录状态
     var $status=false;
+    public $user;
 
     public function index(){
 //        直接输出日期
@@ -87,9 +87,15 @@ class Usercontrol extends Controller
     public function selectUser()
     {
 //       dump( User::where("name='1' and password='1'") ->find());
-
-        $user =AuthMiddleware::where('id', 11)
-            ->where('password','123')->find();
+        $id=$this->request->get('id');
+        echo $id;
+        $user =AuthMiddleware::where('id', $id)->find();
+//            ->where('password','123')->find();
+        dump($user);
+        echo $user['name'];
+        echo $user['created_at'];
+//        echo $user->name;
+        $this->assign('time',$user['created_at']);
         $this->assign('user', $user);
         return $this->fetch('user/index');
 
@@ -157,7 +163,7 @@ class Usercontrol extends Controller
             $user = new AuthMiddleware();
 //        // 显式指定更新数据操作
         $user->isUpdate(true)
-//            save 首值为条件
+////            save 首值为条件
             ->save(['id' => $id, 'name' =>$list['name'],'password'=>$list['password']]);
 
 
@@ -173,7 +179,7 @@ class Usercontrol extends Controller
     public function deleteUser()
     {
 
-        $user = User::get($this->request->get('id'));
+        $user = AuthMiddleware::get($this->request->get('id'));
         if (true) {
 
             $user->delete();
@@ -209,18 +215,52 @@ class Usercontrol extends Controller
 
         $list=$n->getResponsibilityColumn($this->request->get('id'));
         dump($list);
-
+        session('na',12);
+        echo session_id();
         dump( $list[0]->email);
+//        echo session_save_path;
+//        Cookie::set('name',14,30);
+//        if(Cookie::has('name')){
+//           echo Cookie::get('name');
+//            //删除cookie
+////            echo Cookie::delete('name');
+//
+//
+//        }
 
     }
     public function fenye(){
         //
-        $list = AuthMiddleware::where('rank',1)->paginate(2);
+        $list = AuthMiddleware::where('rank',1)->paginate(4);
         dump($list);
 // 把分页数据赋值给模板变量list
         $this->assign('list', $list);
 // 渲染模板输出
         return $this->fetch('user/index2');
+
+    }
+    public function ajax(){
+        $user= AuthMiddleware::where('id','>=',1)->select();
+        $this->assign('user',$user);
+        return $this->fetch('user/ajaxtest');
+
+    }
+    public function search1(){
+        $name=$this->request->get('username');
+       $user= AuthMiddleware::where('username','like',$name.'%')->
+                whereOr('username','like','%'.$name)->
+                whereOr('username','like','%'.$name.'%')->select();
+//      dump($user);
+      foreach ($user as $value)
+      {
+//          dump($value);
+          echo '<a href="selectuser?id='.$value['id'].'">'.($value['name']).'</a><br>';
+
+
+      }
+//        $this->assign('user',$user);
+//        return $this->fetch('user/ajaxtest');
+
 
     }
 

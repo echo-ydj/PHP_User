@@ -1,0 +1,56 @@
+<html>
+<head>
+    <script>
+        function showHint(str)
+        {
+            // document.getElementById("txtHint").innerHTML=str;
+            // alert(str);
+            // document.write(str);
+            var xmlhttp;
+            if (str.length==0)
+            {
+                document.getElementById("txtHint").innerHTML="";
+                return 0;
+            }
+            if (window.XMLHttpRequest)
+            {
+                // IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+                xmlhttp=new XMLHttpRequest();
+            }
+            else
+            {
+                // IE6, IE5 浏览器执行代码
+                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.onreadystatechange=function()
+            {
+                if (xmlhttp.readyState==4 && xmlhttp.status==200)
+                {
+                    document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
+                }
+            }
+            // xmlhttp.open("GET","http://127.0.0.1/user/usercontrol/fenye?page="+str,true);
+            xmlhttp.open("GET","http://127.0.0.1/user/usercontrol/search1?username="+str,true);
+            xmlhttp.send();
+        }
+    </script>
+</head>
+
+
+<body>
+
+
+<form action="">
+    输入姓名: <input type="text" id="txt1" onkeyup="showHint(this.value)" />
+
+</form>
+<p>提示信息: <span id="txtHint">
+
+{foreach ($user as $value)}
+<br>
+{$value.name}
+<br>
+{/foreach}
+    </span></p>
+</body>
+</html>

@@ -13,10 +13,12 @@
 </head>
 <body>
 
+<a href="/user/usercontrol/updateuser">1243242</a>
+
 <div>
     <ul>
         {volist name='list' id='user'}
-        <li> {$user.name}</li>
+        <li> <a href="get1?id={$user.id}">{$user.name}</a></li>
         {/volist}
     </ul>
 </div>

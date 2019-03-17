@@ -36,6 +36,7 @@ class AuthMiddleware extends Model
 
     }
     public function getPowerRank($id){
+
         $user = self::where('id', $id)->find();
         return $user['rank'];
     }
@@ -43,7 +44,7 @@ class AuthMiddleware extends Model
     //
     public function getResponsibilityColumn($id){
 
-        $user = self::where('id', $this->id)->find();
+        $user = self::where('id', $id)->find();
         return $user['in_charge_of'];
     }
 
