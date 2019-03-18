@@ -4,10 +4,13 @@ use think\Model;
 
 class AuthMiddleware extends Model
 {  var $id;
+
     protected $table='user';
+    protected $autoWriteTimestamp = true;
     // 定义时间戳字段名
-    protected $createTime = 'create_at';
-    protected $updateTime = 'update_at';
+
+    protected $createTime = 'created_at';
+    protected $updateTime = 'updated_at';
     //设置json字段
     protected $json = ['in_charge_of'];
 

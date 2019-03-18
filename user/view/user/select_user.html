@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>select</title>
+</head>
+<body>
+<form action="updateuser?id={$user.id}" method="post">
+    name:<input name="name" value="{$user.name}" readonly="true"><br>
+    Username:<input name="username" value="{$user.username}"><br>
+    Password:<input name="password" value="{$user.password}"><br>
+    <input value="提交" type="submit">
+
+</form>
+
+</body>
+</html>

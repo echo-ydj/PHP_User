@@ -70,6 +70,7 @@ class Usercontrol extends Controller
                 $this->status = true;
                 $this->assign('name',$name);
 //                return $this->fetch('user/index2');
+                return redirect('ajax');
                 return redirect("/user/usercontrol/get1?id=".session('id'));
             } else {
                 //登录失败
@@ -97,7 +98,8 @@ class Usercontrol extends Controller
 //        echo $user->name;
         $this->assign('time',$user['created_at']);
         $this->assign('user', $user);
-        return $this->fetch('user/index');
+        return $this->fetch('user/select_user');
+//        return $this->fetch('user/index');
 
 
 
@@ -118,7 +120,8 @@ class Usercontrol extends Controller
         dump($list);
         //判断表单是否传值
         if ($list['name']!=null&&$list['username']!=null){
-            $user = new AuthMiddleware();
+//            $user = new User();
+            $user =new AuthMiddleware();
             $user['in_charge_of']=array(['email'    => 'thinkphp@qq.com', 'nickname'=> '流年']);
            $flag= $user->save([
                 'name'  =>  $list['name'],
@@ -150,9 +153,9 @@ class Usercontrol extends Controller
     
     public function updateUser(Request $request)
     {   $id=session('id');
-        dump(session('id'));
+//        dump(session('id'));
         $list=$request->post();
-
+        $id=$this->request->get('id');
         //判断是否退出登录
         if (session('id')){
 //            此方法更新后数据库  不会  自动生成时间戳
@@ -164,9 +167,10 @@ class Usercontrol extends Controller
 //        // 显式指定更新数据操作
         $user->isUpdate(true)
 ////            save 首值为条件
-            ->save(['id' => $id, 'name' =>$list['name'],'password'=>$list['password']]);
-
-
+            ->save(['id' => $id, 'username' =>$list['username'],
+                  'password'=>$list['password']]);
+//                ->save(['id'=>$id,'username'=>'as']);
+            return $this->redirect('index');
         }
         else{
             return 'error';
@@ -219,7 +223,8 @@ class Usercontrol extends Controller
         echo session_id();
         dump( $list[0]->email);
 //        echo session_save_path;
-//        Cookie::set('name',14,30);
+
+        Cookie::set('name',14,30);
 //        if(Cookie::has('name')){
 //           echo Cookie::get('name');
 //            //删除cookie
@@ -231,8 +236,8 @@ class Usercontrol extends Controller
     }
     public function fenye(){
         //
-        $list = AuthMiddleware::where('rank',1)->paginate(4);
-        dump($list);
+        $list = AuthMiddleware::where('id','>=',1)->paginate(4);
+//        dump($list);
 // 把分页数据赋值给模板变量list
         $this->assign('list', $list);
 // 渲染模板输出
@@ -247,15 +252,21 @@ class Usercontrol extends Controller
     }
     public function search1(){
         $name=$this->request->get('username');
+//        dump($name);
+//        if ($name==null){
+//            return $this->ajax();
+//        }
        $user= AuthMiddleware::where('username','like',$name.'%')->
                 whereOr('username','like','%'.$name)->
                 whereOr('username','like','%'.$name.'%')->select();
 //      dump($user);
+        echo "<br>";
       foreach ($user as $value)
       {
 //          dump($value);
-          echo '<a href="selectuser?id='.$value['id'].'">'.($value['name']).'</a><br>';
+          echo '<a href="selectuser?id='.$value['id'].'">'.($value['name']).'--'.
 
+              ($value['username']).'</a><br>';
 
       }
 //        $this->assign('user',$user);
@@ -263,5 +274,31 @@ class Usercontrol extends Controller
 
 
     }
+    function test(){
+//        update同时updated_at时间改变
+//        ---------1-------------
+//        $user =User::get(5);
+//        $user->name="xigai";
+//        $user->save();
+//        ----------2------------
+//        $user->isUpdate(true)->save(['id'=>5,'name'=>'xiugai']);
 
+
+
+        // 初始化session
+
+        ini_set('session.gc_maxlifetime',10);
+        Session::set('name','is name');
+
+//        Session::expire(10);
+
+
+        echo Session::get('name');
+
+    }
+    function test1(){
+
+
+        echo Session::get('name');
+    }
 }
