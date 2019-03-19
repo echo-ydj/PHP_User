@@ -243,9 +243,10 @@ class Usercontrol extends Controller
 
     }
     public function ajax(){
-        $user= AuthMiddleware::where('id','>=',1)->paginate(7);
-        $this->assign('user',$user);
-        return $this->fetch('user/ajaxtest');
+
+            $user = AuthMiddleware::where('id', '>=', 1)->paginate(7);
+            $this->assign('user', $user);
+            return $this->fetch('user/ajaxtest');
 
     }
 
@@ -253,17 +254,25 @@ class Usercontrol extends Controller
         $name=$this->request->get('username');
         $user= AuthMiddleware::where('username','like',$name.'%')->
         whereOr('username','like','%'.$name)->
-        whereOr('username','like','%'.$name.'%')->paginate(4);
+        whereOr('username','like','%'.$name.'%')
+            ->paginate(2,false,[
+                'path'=>'search1',
+                'query' => array('username' => $name),
+            ]);
 //      dump($user); 这里使用dump会报错
         echo "<br>";
 //
 //        foreach ($user as $value)
 //        {
-//
-//
 ////            echo '<a href="selectuser?id='.$value['id'].'">'.($value['name']).'--'.
 ////                ($value['username']).'</a><br>';
 //        }
+        if($this->request->get('page')){
+            $this->assign('user',$user);
+
+            return $this->fetch('user/ajaxtest');
+        }
+
         $this->assign('user',$user);
         return $this->fetch('user/ajaxtest2');
     }
