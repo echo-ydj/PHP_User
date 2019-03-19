@@ -11,8 +11,7 @@ use think\facade\Cookie;
 
 class Usercontrol extends Controller
 {
-    //用于判断登录状态
-    var $status=false;
+
     public $user;
 
     public function index(){
@@ -25,18 +24,21 @@ class Usercontrol extends Controller
     }
     //判断是否登录
     public function isLogin(){
-        //未登录
-        if($this->status){
-          return  $this->Login();
+       $flag= Session::get('name');
+
+        if($flag){
+            //已经登录
+          return  1;
         }
         else{
-            return $this->noLogin();
+//            未登录
+            return $this->Login();
         }
 
     }
     public function logout(){
         //账户退出
-        $this->status=false;
+
         session('name',null);
         session('password', null);
         session('id',null);
@@ -58,20 +60,16 @@ class Usercontrol extends Controller
                 //存入session
                 //
                 //   ------------------ session关闭浏览器后失效  不能设置失效时间--------------
+                Session::set('id',$user['id']);
+                Session::set('name',$list['name']);
+//                session('password', $list['password']);
 
-                session('name', $list['name']);
-                session('password', $list['password']);
-                session('id',$user['id']);
                 $name=Session::get('name');
 
-
-
-//                      登录状态改为true
-                $this->status = true;
                 $this->assign('name',$name);
 //                return $this->fetch('user/index2');
-                return redirect('ajax');
-                return redirect("/user/usercontrol/get1?id=".session('id'));
+//                return redirect('ajax');
+                return redirect("/user/usercontrol/get1?id=".Session::get('id'));
             } else {
                 //登录失败
                 return "error";
@@ -245,34 +243,29 @@ class Usercontrol extends Controller
 
     }
     public function ajax(){
-        $user= AuthMiddleware::where('id','>=',1)->select();
+        $user= AuthMiddleware::where('id','>=',1)->paginate(7);
         $this->assign('user',$user);
         return $this->fetch('user/ajaxtest');
 
     }
+
     public function search1(){
         $name=$this->request->get('username');
-//        dump($name);
-//        if ($name==null){
-//            return $this->ajax();
-//        }
-       $user= AuthMiddleware::where('username','like',$name.'%')->
-                whereOr('username','like','%'.$name)->
-                whereOr('username','like','%'.$name.'%')->select();
-//      dump($user);
+        $user= AuthMiddleware::where('username','like',$name.'%')->
+        whereOr('username','like','%'.$name)->
+        whereOr('username','like','%'.$name.'%')->paginate(4);
+//      dump($user); 这里使用dump会报错
         echo "<br>";
-      foreach ($user as $value)
-      {
-//          dump($value);
-          echo '<a href="selectuser?id='.$value['id'].'">'.($value['name']).'--'.
-
-              ($value['username']).'</a><br>';
-
-      }
-//        $this->assign('user',$user);
-//        return $this->fetch('user/ajaxtest');
-
-
+//
+//        foreach ($user as $value)
+//        {
+//
+//
+////            echo '<a href="selectuser?id='.$value['id'].'">'.($value['name']).'--'.
+////                ($value['username']).'</a><br>';
+//        }
+        $this->assign('user',$user);
+        return $this->fetch('user/ajaxtest2');
     }
     function test(){
 //        update同时updated_at时间改变
@@ -281,14 +274,20 @@ class Usercontrol extends Controller
 //        $user->name="xigai";
 //        $user->save();
 //        ----------2------------
+//        $user =new AuthMiddleware();
 //        $user->isUpdate(true)->save(['id'=>5,'name'=>'xiugai']);
 
+//        $up =AuthMiddleware::where('id',5)->find();
+////        dump($up);
+////        拆分时间
+//        $list=explode(' ',$up['updated_at'],2);
+//        echo $list[0];
+//
+//        // 初始化session
 
-
-        // 初始化session
-
-        ini_set('session.gc_maxlifetime',10);
+//        ini_set('session.gc_maxlifetime',10);
         Session::set('name','is name');
+
 
 //        Session::expire(10);
 

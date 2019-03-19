@@ -6,9 +6,11 @@ class AuthMiddleware extends Model
 {  var $id;
 
     protected $table='user';
-    protected $autoWriteTimestamp = true;
-    // 定义时间戳字段名
 
+    // 定义时间戳字段名
+//   支持类型改为timestamp
+    protected $autoWriteTimestamp = 'timestamp';
+//    修改为在数据库中的字段名
     protected $createTime = 'created_at';
     protected $updateTime = 'updated_at';
     //设置json字段
