@@ -38,39 +38,48 @@
 
            // alert("http://127.0.0.1/user/usercontrol/search1?username="+str);
             //我的电脑 注意端口号
-            xmlhttp.open("GET","http://127.0.0.1/user/usercontrol/search1?username="+str,true);
-             // xmlhttp.open("GET","http://127.0.0.1:8080/user/usercontrol/search1?username="+str,true);
-             xmlhttp.send();
+            // xmlhttp.open("GET","http://127.0.0.1/user/usercontrol/search1?username="+str,true);
+            //  xmlhttp.open("GET","http://127.0.0.1:8080/user/usercontrol/search1?username="+str,true);
+            xmlhttp.open("GET","http://127.0.0.1:8080/user/usercontrol/ajax?username="+str,true);
+
+            xmlhttp.send();
 
 
 
 
         }
     </script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 
 <body>
-<form action="" >
-    输入username: <input type="text" id="txt1" onkeyup="showHint(this.value)"/>
+<form action=""  role="form">
+
+    <div class="row">
+        <div class="col-lg-3">
+            输入username: <input type="text" id="txt1" value="{$name}" onkeyup="showHint(this.value)"/>
+        </div>
+    </div>
     <!--<input type="button" value="搜索"-->
            <!--onclick="showHint(document.getElementById('txt1').value)">-->
 </form>
 账户显示:
 <div id="txtHint">
-    <table>
+    <table  class="table table-striped">
         <tr>
             <td>ID</td>
             <td>name</td>
             <td>username</td>
+            <td>操作</td>
         </tr>
         {foreach ($user as $value)}
         <tr>
             <td>{$value.id}</td>
             <td>{$value.name}</td>
             <td>{$value.username}</td>
-            <td><a href="selectuser?id={$value.id}">修改</a> </td>
-            <td><a href="deleteuser?id={$value.id}">删除</a> </td>
+            <td><a href="selectuser?id={$value.id}">修改</a>
+            <a href="deleteuser?id={$value.id}">删除</a> </td>
         </tr>
 
         {/foreach}

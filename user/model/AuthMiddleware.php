@@ -40,7 +40,7 @@ class AuthMiddleware extends Model
         return $user['name'];
 
     }
-    public function getPowerRank($id){
+    public static function getPowerRank($id){
 
         $user = self::where('id', $id)->find();
         return $user['rank'];

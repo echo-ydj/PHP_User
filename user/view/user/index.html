@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>user</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <br><br>
@@ -10,6 +11,7 @@
 <h3>登录</h3>
 
 <br>
+
 
 {$time%86400 == 57600 ? date('Y-m-d') : date('Y-m-d H:i');}
 <form action="/user/usercontrol/login" method="post">
@@ -19,14 +21,6 @@
     <input type="submit" value="确认">
 </form>
 <br><br>
-<h3>注册</h3>
-<form action="/user/usercontrol/insertuser" method="post">
-    name：<input type="text" name="name">
-    username：<input type="text" name="username">
-    rank：<input type="text" name="rank">
-    password:<input type="password" name="password">
-    <!--control:<input type="text" name="control">-->
-    <input type="submit" value="注册">
-</form>
+
 </body>
 </html>
