@@ -28,6 +28,7 @@ class Usercontrol extends Controller
        $flag= Session::get('name');
 //        dump(empty($flag));
 //        empty() 是否为空   空true 非空 else
+//        dump($flag);
         if($flag){
             //已经登录
             $user=AuthMiddleware::get(Session::get('id'));
@@ -149,6 +150,7 @@ class Usercontrol extends Controller
         if ($list['name']!=null&&$list['username']!=null) {
 //            $user = new User();
             if (AuthMiddleware::where('name', $list['name'])->find()) {
+                echo "alert('用户名已存在,请重新输入')";
                 return $this->error('用户名已存在,请重新输入','add_user');
 
             } else {
@@ -174,15 +176,16 @@ class Usercontrol extends Controller
 //            echo $user->create_at;
                 if ($flag) {
 //                注册成功
-                    return "sucess";
+                    return $this->isLogin();
 
                 } else {
 //                注册失败
-                    return 0;
+                    return $this->fetch('user/add_user');
                 }
             }
         }else{
-            return $this->error('请输入name,usename','add_user');
+            echo "<script>alert('请输入name,usename');</script>";
+            return  $this->fetch('user/add_user');;
         }
 
 
@@ -209,8 +212,8 @@ class Usercontrol extends Controller
             ->save(['id' => $id, 'username' =>$list['username'],
                   'password'=>$list['password']]);
 //                ->save(['id'=>$id,'username'=>'as']);
-
-            return $this->success('修改成功','islogin');
+            echo "<script>alert('修改成功');</script>";
+            return $this->isLogin();
 
         }
         else{
@@ -389,14 +392,16 @@ class Usercontrol extends Controller
 
     }
     function test1(){
-$user=Session::get('name');
-dump(empty($user));
-if ($user){
-    echo 1;
-}
-else{
-    return 0;
-}
+        echo "<script>alert('123')</script>";
+
+        $user=Session::set('name',12);
+        dump(empty($user));
+        if ($user){
+        echo 1;
+                    }
+        else{
+        return 0;
+        }
         echo Session::get('name');
     }
 }
