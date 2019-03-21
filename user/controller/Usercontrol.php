@@ -56,6 +56,7 @@ class Usercontrol extends Controller
         session('password', null);
         session('id',null);
         session('rank',null);
+        echo "<scrpte>alert('退出成功');</scrpte>";
         return $this->success('退出成功','index');
     }
     //判断登录成
@@ -150,9 +151,8 @@ class Usercontrol extends Controller
         if ($list['name']!=null&&$list['username']!=null) {
 //            $user = new User();
             if (AuthMiddleware::where('name', $list['name'])->find()) {
-                echo "alert('用户名已存在,请重新输入')";
-                return $this->error('用户名已存在,请重新输入','add_user');
-
+                echo "<scrpte>alert('用户名已存在,请重新输入')</scrpte>";
+                return $this->fetch('user/add_user');
             } else {
                 $user = new AuthMiddleware();
 
@@ -392,16 +392,18 @@ class Usercontrol extends Controller
 
     }
     function test1(){
-        echo "<script>alert('123')</script>";
-
-        $user=Session::set('name',12);
-        dump(empty($user));
-        if ($user){
-        echo 1;
-                    }
-        else{
-        return 0;
-        }
-        echo Session::get('name');
+//        echo "<script>alert('123')</script>";
+//
+//        $user=Session::set('name',12);
+//        dump(empty($user));
+//        if ($user){
+//        echo 1;
+//                    }
+//        else{
+//        return 0;
+//        }
+//        echo Session::get('name');
+        return $this->fetch('user/static_index3');
     }
+
 }
